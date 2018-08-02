@@ -39,7 +39,7 @@ FileETag None
 
 
 # Don't allow to download wp-config.php if PHP is somehow dissabled on the webserver or sql/log files
-<Files ~ ".(sql|log)|wp-config.php$">
+<Files ~ "(wp-config.php)|(.(sql|log))$">
     Order Allow,Deny
     Deny from All
 </Files>
