@@ -1,0 +1,54 @@
+# Disable directory listing
+Options -Indexes
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # uncomment this if: you have an old domain which should redirect to the new one
+  # RewriteCond %{HTTP_HOST} ^(www.)?old-domain.de$
+  # RewriteRule ^(.*)$ https://new-domain.de/$1 [R=301,L]
+
+  # uncomment this if: you have installed an SSL certificate
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Any URIs that containt wp-config.php will be denied
+  RewriteCond %{QUERY_STRING} wp-config.php
+  RewriteRule .* - [F]
+
+  RewriteRule ^index\.php$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress
+
+# Disable Etags
+Header unset ETag
+FileETag None
+
+# Compress plain text files and images
+<IfModule mod_deflate.c>
+  <FilesMatch "\.(js|jpe?g|gif|png|css|php)$">
+    SetOutputFilter DEFLATE
+  </FilesMatch>
+</IfModule>
+
+
+# Don't allow to download wp-config.php if PHP is somehow dissabled on the webserver or sql/log files
+<Files ~ ".(sql|log)|wp-config.php$">
+    Order Allow,Deny
+    Deny from All
+</Files>
+
+<IfModule mod_headers.c>
+  # Disallow iframe embedding on other other origins
+  Header always append X-Frame-Options SAMEORIGIN
+  # Prevents the browser from doing MIME-type sniffing
+  Header set X-Content-Type-Options nosniff
+  # Enables XSS filtering
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
