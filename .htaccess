@@ -51,4 +51,7 @@ FileETag None
   Header set X-Content-Type-Options nosniff
   # Enables XSS filtering
   Header set X-XSS-Protection "1; mode=block"
+  # Disable PHP-Version or other powered-by headers
+  Header unset X-Powered-By
+  ServerSignature Off
 </IfModule>
